@@ -75,7 +75,8 @@ export async function POST(req: NextRequest) {
       serviceId: data.serviceId,
       serviceName: service.name,
       serviceDuration: service.duration,
-      servicePrice: Number(service.price),
+      servicePrice: service.priceFrom ?? Number(service.price),
+      servicePriceDisplay: String(service.price),
       date: data.date,
       timeSlot: data.timeSlot,
       status: 'PENDING',
@@ -92,7 +93,8 @@ export async function POST(req: NextRequest) {
         serviceName: service.name,
         date: data.date,
         timeSlot: data.timeSlot,
-        servicePrice: Number(service.price),
+        servicePrice: service.priceFrom ?? Number(service.price),
+        servicePriceDisplay: String(service.price),
         serviceDuration: service.duration,
       });
       await bookingRef.update({ emailSent: true });

@@ -43,7 +43,11 @@ export function BookingConfirmationCard({ booking }: { booking: BookingState }) 
         <div className="pt-2 border-t border-border flex justify-between text-sm">
           <span className="text-muted-foreground">Total</span>
           <span className="font-bold text-[#6366f1] text-base">
-            {currency}{booking.service?.price.toFixed(2)}
+            {booking.service
+              ? typeof booking.service.price === 'string'
+                ? `${currency}${booking.service.price.split('-').join(` – ${currency}`)}`
+                : `${currency}${Number(booking.service.price).toFixed(2)}`
+              : ''}
           </span>
         </div>
       </div>

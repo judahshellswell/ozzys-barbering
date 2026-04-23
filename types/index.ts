@@ -5,7 +5,8 @@ export interface Service {
   name: string;
   description: string;
   duration: number; // minutes
-  price: number;
+  price: number | string; // number for fixed price, "15-20" for range
+  priceFrom?: number;    // lower bound when price is a range (used for booking)
   active: boolean;
   order: number;
   createdAt: string;
@@ -49,6 +50,7 @@ export interface GalleryImage {
   storagePath: string;
   caption: string | null;
   order: number;
+  type: 'image' | 'video';
   createdAt: string;
 }
 

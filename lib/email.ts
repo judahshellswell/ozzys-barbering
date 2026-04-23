@@ -16,6 +16,7 @@ interface BookingEmailData {
   date: string;
   timeSlot: string;
   servicePrice: number;
+  servicePriceDisplay?: string;
   serviceDuration: number;
 }
 
@@ -66,7 +67,7 @@ function customerHtml(data: BookingEmailData): string {
           <tr><td>Date</td><td>${formatDate(data.date)}</td></tr>
           <tr><td>Time</td><td>${formatTime(data.timeSlot)}</td></tr>
           <tr><td>Duration</td><td>${data.serviceDuration} mins</td></tr>
-          <tr><td>Price</td><td>${currency}${data.servicePrice.toFixed(2)}</td></tr>
+          <tr><td>Price</td><td>${data.servicePriceDisplay ? (data.servicePriceDisplay.includes('-') ? `${currency}${data.servicePriceDisplay.split('-').join(` – ${currency}`)}` : `${currency}${data.servicePriceDisplay}`) : `${currency}${data.servicePrice.toFixed(2)}`}</td></tr>
         </table>
       </div>
       <p style="font-size:13px;color:#94a3b8">Need to cancel or view your booking? Use the button below — please cancel at least ${businessConfig.booking.cancellationPolicyHours} hours before your appointment.</p>
@@ -115,7 +116,7 @@ function ozzyNotificationHtml(data: BookingEmailData): string {
           <tr><td>Date</td><td>${formatDate(data.date)}</td></tr>
           <tr><td>Time</td><td>${formatTime(data.timeSlot)}</td></tr>
           <tr><td>Duration</td><td>${data.serviceDuration} mins</td></tr>
-          <tr><td>Price</td><td>${currency}${data.servicePrice.toFixed(2)}</td></tr>
+          <tr><td>Price</td><td>${data.servicePriceDisplay ? (data.servicePriceDisplay.includes('-') ? `${currency}${data.servicePriceDisplay.split('-').join(` – ${currency}`)}` : `${currency}${data.servicePriceDisplay}`) : `${currency}${data.servicePrice.toFixed(2)}`}</td></tr>
           <tr><td>Ref</td><td>${data.confirmationCode}</td></tr>
         </table>
       </div>

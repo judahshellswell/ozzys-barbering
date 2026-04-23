@@ -45,7 +45,9 @@ export function ServiceCard({ service, selected, onClick, variant = 'default' }:
           </div>
           <div className="text-right shrink-0">
             <span className="text-2xl font-bold text-[#6366f1]">
-              {currency}{service.price.toFixed(2)}
+              {typeof service.price === 'string'
+                ? `${currency}${service.price.split('-').join(` – ${currency}`)}`
+                : `${currency}${Number(service.price).toFixed(2)}`}
             </span>
           </div>
         </div>

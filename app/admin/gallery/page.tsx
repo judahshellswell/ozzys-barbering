@@ -8,7 +8,7 @@ import { useAdminToken, authHeaders } from '@/lib/use-admin-token';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
-import { Upload, Trash2, ImagePlus } from 'lucide-react';
+import { Upload, Trash2, ImagePlus, Play } from 'lucide-react';
 import Image from 'next/image';
 import type { GalleryImage } from '@/types';
 
@@ -77,7 +77,7 @@ export default function AdminGalleryPage() {
         <div className="bg-card border border-border rounded-xl p-3 sm:p-5 mb-4 sm:mb-6">
           <h2 className="font-semibold mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
             <ImagePlus className="h-4 w-4 text-[#6366f1]" />
-            Upload New Photo
+            Upload Photo or Video
           </h2>
           <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             <Input
@@ -94,7 +94,7 @@ export default function AdminGalleryPage() {
               <input
                 ref={fileRef}
                 type="file"
-                accept="image/*"
+                accept="image/*,video/*"
                 onChange={handleUpload}
                 className="hidden"
                 disabled={uploading}
@@ -117,13 +117,30 @@ export default function AdminGalleryPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {images.map((img) => (
               <div key={img.id} className="relative group aspect-square rounded-lg overflow-hidden bg-muted">
-                <Image
-                  src={img.url}
-                  alt={img.caption ?? 'Gallery image'}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
+                {img.type === 'video' ? (
+                  <video
+                    src={img.url}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                    preload="metadata"
+                  />
+                ) : (
+                  <Image
+                    src={img.url}
+                    alt={img.caption ?? 'Gallery image'}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                )}
+                {img.type === 'video' && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="bg-black/50 rounded-full p-2">
+                      <Play className="h-5 w-5 text-white fill-white" />
+                    </div>
+                  </div>
+                )}
                 {img.caption && (
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent px-2 py-2">
                     <p className="text-white text-xs truncate">{img.caption}</p>

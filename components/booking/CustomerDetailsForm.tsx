@@ -73,7 +73,7 @@ export function CustomerDetailsForm({ booking, onSuccess, onBack }: CustomerDeta
       <div className="bg-[#1e293b] text-white rounded-lg p-4 mb-6 text-sm">
         <div className="grid grid-cols-2 gap-2">
           <div><span className="text-gray-400">Service</span><p className="font-medium">{booking.service?.name}</p></div>
-          <div><span className="text-gray-400">Price</span><p className="font-medium text-[#6366f1]">{currency}{booking.service?.price.toFixed(2)}</p></div>
+          <div><span className="text-gray-400">Price</span><p className="font-medium text-[#6366f1]">{booking.service ? typeof booking.service.price === 'string' ? `${currency}${booking.service.price.split('-').join(` – ${currency}`)}` : `${currency}${Number(booking.service.price).toFixed(2)}` : ''}</p></div>
           <div><span className="text-gray-400">Date</span><p className="font-medium">{formatDate(booking.date)}</p></div>
           <div><span className="text-gray-400">Time</span><p className="font-medium">{formatTime(booking.timeSlot)}</p></div>
         </div>

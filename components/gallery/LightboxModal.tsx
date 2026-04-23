@@ -56,19 +56,29 @@ export function LightboxModal({ images, initialIndex, onClose }: LightboxModalPr
         </button>
       )}
 
-      {/* Image */}
+      {/* Media */}
       <div
         className="max-w-4xl max-h-[85vh] w-full px-16"
         onClick={(e) => e.stopPropagation()}
       >
-        <Image
-          src={image.url}
-          alt={image.caption ?? `Gallery photo ${index + 1}`}
-          width={1200}
-          height={900}
-          className="w-full h-full object-contain max-h-[80vh] rounded-lg"
-          unoptimized
-        />
+        {image.type === 'video' ? (
+          <video
+            key={image.url}
+            src={image.url}
+            controls
+            autoPlay
+            className="w-full max-h-[80vh] rounded-lg object-contain"
+          />
+        ) : (
+          <Image
+            src={image.url}
+            alt={image.caption ?? `Gallery photo ${index + 1}`}
+            width={1200}
+            height={900}
+            className="w-full h-full object-contain max-h-[80vh] rounded-lg"
+            unoptimized
+          />
+        )}
         {image.caption && (
           <p className="text-center text-white/70 text-sm mt-3">{image.caption}</p>
         )}

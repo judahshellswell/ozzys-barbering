@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
     await fileRef.makePublic();
 
     const url = `https://storage.googleapis.com/${bucket.name}/${storagePath}`;
+    const type = file.type.startsWith('video/') ? 'video' : 'image';
 
     // Get current max order
     const db = adminDb();
@@ -52,11 +53,12 @@ export async function POST(req: NextRequest) {
       url,
       storagePath,
       caption: caption ?? null,
+      type,
       order,
       createdAt: new Date(),
     });
 
-    return NextResponse.json({ id: ref.id, url, storagePath, caption, order }, { status: 201 });
+    return NextResponse.json({ id: ref.id, url, storagePath, caption, type, order }, { status: 201 });
   } catch (error) {
     console.error('Gallery upload error:', error);
     return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });

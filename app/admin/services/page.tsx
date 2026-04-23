@@ -20,13 +20,15 @@ interface ServiceFormState {
   name: string;
   description: string;
   duration: number;
+  priceType: 'fixed' | 'range';
   price: number;
+  priceMax: number;
   active: boolean;
   order: number;
 }
 
 const defaultForm: ServiceFormState = {
-  name: '', description: '', duration: 30, price: 20, active: true, order: 0,
+  name: '', description: '', duration: 30, priceType: 'fixed', price: 20, priceMax: 25, active: true, order: 0,
 };
 
 export default function AdminServicesPage() {
@@ -55,11 +57,17 @@ export default function AdminServicesPage() {
 
   function openEdit(service: Service) {
     setEditing(service);
+    const isRange = typeof service.price === 'string' && service.price.includes('-');
+    const [priceMin, priceMax] = isRange
+      ? (service.price as string).split('-').map(Number)
+      : [Number(service.price), Number(service.price) + 5];
     setForm({
       name: service.name,
       description: service.description ?? '',
       duration: service.duration,
-      price: service.price,
+      priceType: isRange ? 'range' : 'fixed',
+      price: priceMin,
+      priceMax,
       active: service.active,
       order: service.order,
     });
@@ -72,10 +80,13 @@ export default function AdminServicesPage() {
       const token = await getToken();
       const url = editing ? `/api/services/${editing.id}` : '/api/services';
       const method = editing ? 'PUT' : 'POST';
+      const price = form.priceType === 'range' ? `${form.price}-${form.priceMax}` : form.price;
+      const priceFrom = form.priceType === 'range' ? form.price : undefined;
+      const { priceType, priceMax, ...rest } = form;
       const res = await fetch(url, {
         method,
         headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...rest, price, priceFrom }),
       });
       if (!res.ok) throw new Error();
       toast.success(editing ? 'Service updated' : 'Service created');
@@ -127,7 +138,7 @@ export default function AdminServicesPage() {
                     </Badge>
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
-                    {s.duration} min · {currency}{s.price.toFixed(2)}
+                    {s.duration} min · {currency}{typeof s.price === 'string' ? s.price : Number(s.price).toFixed(2)}
                     {s.description && ` · ${s.description}`}
                   </p>
                 </div>
@@ -159,15 +170,39 @@ export default function AdminServicesPage() {
               <Label>Description</Label>
               <Textarea value={form.description} onChange={(e) => setForm(f => ({...f, description: e.target.value}))} rows={2} className="mt-1" />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Duration (mins) *</Label>
-                <Input type="number" value={form.duration} onChange={(e) => setForm(f => ({...f, duration: Number(e.target.value)}))} min={5} max={480} className="mt-1" />
-              </div>
-              <div>
+            <div>
+              <Label>Duration (mins) *</Label>
+              <Input type="number" value={form.duration} onChange={(e) => setForm(f => ({...f, duration: Number(e.target.value)}))} min={5} max={480} className="mt-1" />
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
                 <Label>Price ({currency}) *</Label>
-                <Input type="number" value={form.price} onChange={(e) => setForm(f => ({...f, price: Number(e.target.value)}))} min={0} step={0.5} className="mt-1" />
+                <div className="flex rounded-md overflow-hidden border border-border text-xs">
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => ({...f, priceType: 'fixed'}))}
+                    className={`px-3 py-1 transition-colors ${form.priceType === 'fixed' ? 'bg-[#1e293b] text-white' : 'bg-muted text-muted-foreground'}`}
+                  >
+                    Fixed
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm(f => ({...f, priceType: 'range'}))}
+                    className={`px-3 py-1 transition-colors ${form.priceType === 'range' ? 'bg-[#1e293b] text-white' : 'bg-muted text-muted-foreground'}`}
+                  >
+                    Range
+                  </button>
+                </div>
               </div>
+              {form.priceType === 'fixed' ? (
+                <Input type="number" value={form.price} onChange={(e) => setForm(f => ({...f, price: Number(e.target.value)}))} min={0} step={0.5} placeholder="e.g. 15" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Input type="number" value={form.price} onChange={(e) => setForm(f => ({...f, price: Number(e.target.value)}))} min={0} step={0.5} placeholder="From" />
+                  <span className="text-muted-foreground text-sm shrink-0">to</span>
+                  <Input type="number" value={form.priceMax} onChange={(e) => setForm(f => ({...f, priceMax: Number(e.target.value)}))} min={0} step={0.5} placeholder="To" />
+                </div>
+              )}
             </div>
             <div>
               <Label>Display Order</Label>
