@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { adminDb } from '@/lib/firebase-admin';
 import { ServiceGrid } from '@/components/services/ServiceGrid';
 import { LinkButton } from '@/components/ui/link-button';
@@ -6,12 +8,12 @@ import type { Service } from '@/types';
 async function getServices(): Promise<Service[]> {
   try {
     const db = adminDb();
-    const snapshot = await db.collection('services').where('active', '==', true).orderBy('order', 'asc').get();
-    return snapshot.docs.map((doc) => ({
+    const snapshot = await db.collection('services').orderBy('order', 'asc').get();
+    return (snapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Omit<Service, 'id'>),
       createdAt: doc.data().createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
-    }));
+    })) as Service[]).filter((s) => s.active);
   } catch {
     return [];
   }
@@ -39,7 +41,7 @@ export default async function ServicesPage() {
         <div className="text-center mt-12">
           <LinkButton
             href="/booking"
-            className="bg-[#6366f1] hover:bg-[#4f46e5] text-black font-semibold px-8 py-6 text-lg border-transparent"
+            className="bg-[#6366f1] hover:bg-[#4f46e5] text-white font-semibold px-8 py-6 text-lg border-transparent"
           >
             Book Now
           </LinkButton>

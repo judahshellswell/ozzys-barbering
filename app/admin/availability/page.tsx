@@ -14,34 +14,12 @@ import type { Availability, BlockedDate } from '@/types';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-const HOURS = Array.from({ length: 24 }, (_, i) => {
-  const h = i.toString().padStart(2, '0');
-  const label = i === 0 ? '12:00 AM' : i < 12 ? `${i}:00 AM` : i === 12 ? '12:00 PM' : `${i - 12}:00 PM`;
-  return { value: `${h}:00`, label };
-});
-
 const DEFAULT_SCHEDULE: Availability[] = DAY_NAMES.map((_, i) => ({
   dayOfWeek: i,
   startTime: '09:00',
   endTime: '18:00',
   isActive: i >= 1 && i <= 6,
 }));
-
-function HourSelect({ value, onChange, disabled }: { value: string; onChange: (v: string) => void; disabled?: boolean }) {
-  const normalised = value.length === 5 && value.endsWith(':00') ? value : value.slice(0, 2) + ':00';
-  return (
-    <select
-      value={normalised}
-      onChange={(e) => onChange(e.target.value)}
-      disabled={disabled}
-      className="h-8 rounded-md border border-input bg-background px-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {HOURS.map((h) => (
-        <option key={h.value} value={h.value}>{h.label}</option>
-      ))}
-    </select>
-  );
-}
 
 export default function AdminAvailabilityPage() {
   const { getToken } = useAdminToken();
@@ -137,8 +115,7 @@ export default function AdminAvailabilityPage() {
       <div className="p-6 space-y-8 max-w-2xl">
         {/* Weekly Schedule */}
         <section>
-          <h2 className="font-semibold text-lg mb-1">Weekly Schedule</h2>
-          <p className="text-sm text-muted-foreground mb-4">Set the hours Ozzy is available each day.</p>
+          <h2 className="font-semibold text-lg mb-4">Weekly Schedule</h2>
           {loading ? (
             <div className="space-y-2">{[1,2,3,4,5,6,7].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}</div>
           ) : (
@@ -152,16 +129,20 @@ export default function AdminAvailabilityPage() {
                     <div className={`w-4 h-4 bg-white rounded-full mx-1 transition-transform ${day.isActive ? 'translate-x-4' : ''}`} />
                   </button>
                   <span className="w-24 text-sm font-medium shrink-0">{DAY_NAMES[day.dayOfWeek]}</span>
-                  <HourSelect
+                  <Input
+                    type="time"
                     value={day.startTime}
-                    onChange={(v) => updateDay(day.dayOfWeek, 'startTime', v)}
+                    onChange={(e) => updateDay(day.dayOfWeek, 'startTime', e.target.value)}
                     disabled={!day.isActive}
+                    className="w-32 h-8 text-sm"
                   />
                   <span className="text-muted-foreground text-sm">to</span>
-                  <HourSelect
+                  <Input
+                    type="time"
                     value={day.endTime}
-                    onChange={(v) => updateDay(day.dayOfWeek, 'endTime', v)}
+                    onChange={(e) => updateDay(day.dayOfWeek, 'endTime', e.target.value)}
                     disabled={!day.isActive}
+                    className="w-32 h-8 text-sm"
                   />
                   {!day.isActive && <Badge variant="secondary" className="text-xs">Closed</Badge>}
                 </div>

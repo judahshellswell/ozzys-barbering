@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Link from 'next/link';
 import { LinkButton } from '@/components/ui/link-button';
 import { ServiceGrid } from '@/components/services/ServiceGrid';
@@ -68,13 +70,12 @@ export default async function HomePage() {
               >
                 Book Now
               </LinkButton>
-              <LinkButton
+              <Link
                 href="/services"
-                variant="outline"
-                className="border-white/30 text-white hover:bg-white/10 hover:text-white px-8 py-6 text-base rounded-md"
+                className="inline-flex items-center justify-center px-8 py-6 text-base font-semibold rounded-md border border-white/40 text-white hover:bg-white/10 transition-colors"
               >
                 View Services
-              </LinkButton>
+              </Link>
             </div>
           </div>
 
