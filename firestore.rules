@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /services/{id} { allow read: if true; allow write: if request.auth != null; }
+    match /availability/{id} { allow read: if true; allow write: if request.auth != null; }
+    match /blockedDates/{id} { allow read: if true; allow write: if request.auth != null; }
+    match /bookings/{id} { allow read, write: if request.auth != null; allow create: if true; }
+    match /galleryImages/{id} { allow read: if true; allow write: if request.auth != null; }
+  }
+}

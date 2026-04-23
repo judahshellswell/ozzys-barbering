@@ -1,0 +1,11 @@
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "storage": [
+    {
+      "bucket": "ozzys-barbering.firebasestorage.app",
+      "rules": "storage.rules"
+    }
+  ]
+}
