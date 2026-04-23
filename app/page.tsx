@@ -70,12 +70,12 @@ export default async function HomePage() {
               >
                 Book Now
               </LinkButton>
-              <Link
+              <LinkButton
                 href="/services"
-                className="inline-flex items-center justify-center px-8 py-6 text-base font-semibold rounded-md border border-white/40 text-white hover:bg-white/10 transition-colors"
+                className="bg-transparent hover:bg-white/10 text-white font-semibold px-8 py-6 text-base rounded-md border border-white/40"
               >
                 View Services
-              </Link>
+              </LinkButton>
             </div>
           </div>
 
