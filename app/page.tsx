@@ -62,13 +62,12 @@ export default async function HomePage() {
               </span>
             </div>
             <h1 className="font-display text-6xl sm:text-7xl lg:text-8xl leading-none mb-6">
-              {businessConfig.name.split(' ')[0]}
-              <span className="text-[#6366f1]">&apos;s</span>
+              Ozzy<span className="text-[#6366f1]">&apos;s</span>
               <br />
               <span className="text-gray-300">Barbering</span>
             </h1>
             <p className="text-gray-400 text-lg mb-8 max-w-md leading-relaxed">
-              {businessConfig.tagline} Based in Jersey — walk-ins welcome or book your slot online.
+              {businessConfig.tagline} Based in Jersey — book your slot online.
             </p>
             <div className="flex flex-wrap gap-4">
               <LinkButton
@@ -136,7 +135,7 @@ export default async function HomePage() {
           <h2 className="font-display text-5xl tracking-wide text-center mb-12">Why Choose Ozzy?</h2>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
-              { icon: '✂️', title: 'Precision Every Time', body: 'Years of experience delivering clean fades, sharp lines, and classic cuts.' },
+              { icon: '✂️', title: 'Precision Every Time', body: 'Clean fades, sharp lines, and classic cuts.' },
               { icon: '📱', title: 'Easy Online Booking', body: 'Book your slot in minutes — no phone calls, no waiting around.' },
               { icon: '💈', title: 'Traditional Barbering', body: 'Classic techniques, modern style. The barbershop experience you deserve.' },
             ].map(({ icon, title, body }) => (
@@ -199,7 +198,7 @@ export default async function HomePage() {
       <section className="bg-[#6366f1] py-16 px-4 text-center">
         <h2 className="font-display text-5xl tracking-wide text-white mb-3">Ready for a Fresh Cut?</h2>
         <p className="text-white/80 mb-8 text-lg">
-          Book your appointment online in seconds. Walk-ins also welcome.
+          Book your appointment online in seconds.
         </p>
         <LinkButton
           href="/booking"

@@ -45,7 +45,7 @@ export const businessConfig = {
 
   seo: {
     title: "Ozzy's Barbering | Sharp Cuts in Jersey",
-    description: "Book your next haircut with Ozzy. Professional fades, cuts, and beard trims. Walk-ins welcome — or reserve your slot online.",
+    description: "Book your next haircut with Ozzy. Professional fades, cuts, and beard trims. Reserve your slot online.",
     ogImage: '/og-image.jpg',
   },
 } as const;
