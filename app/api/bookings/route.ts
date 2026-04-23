@@ -13,20 +13,19 @@ export async function GET(req: NextRequest) {
   try {
     const db = adminDb();
     const { searchParams } = new URL(req.url);
-    const status = searchParams.get('status');
-    const date = searchParams.get('date');
+    const statusFilter = searchParams.get('status');
 
-    let query: FirebaseFirestore.Query = db.collection('bookings').orderBy('createdAt', 'desc');
-
-    if (status) query = query.where('status', '==', status);
-    if (date) query = query.where('date', '==', date);
-
-    const snapshot = await query.limit(200).get();
-    const bookings: Booking[] = snapshot.docs.map((doc) => ({
+    // Avoid composite index: fetch all ordered by createdAt, filter in app code
+    const snapshot = await db.collection('bookings').orderBy('createdAt', 'desc').limit(200).get();
+    let bookings: Booking[] = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Omit<Booking, 'id'>),
       createdAt: doc.data().createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
     }));
+
+    if (statusFilter) {
+      bookings = bookings.filter((b) => b.status === statusFilter);
+    }
 
     return NextResponse.json(bookings);
   } catch (error) {
@@ -49,44 +48,42 @@ export async function POST(req: NextRequest) {
     }
     const service = serviceDoc.data() as Service;
 
-    // Transaction: check slot not taken, then write
-    const confirmationCode = generateConfirmationCode();
+    // Check for existing booking at same date+slot (no transaction query — avoid index requirement)
+    const existingSnap = await db
+      .collection('bookings')
+      .where('date', '==', data.date)
+      .where('timeSlot', '==', data.timeSlot)
+      .get();
 
-    const result = await db.runTransaction(async (tx) => {
-      const existing = await tx.get(
-        db
-          .collection('bookings')
-          .where('date', '==', data.date)
-          .where('timeSlot', '==', data.timeSlot)
-          .where('status', '!=', 'CANCELLED')
+    const alreadyTaken = existingSnap.docs.some((d) => d.data().status !== 'CANCELLED');
+    if (alreadyTaken) {
+      return NextResponse.json(
+        { error: 'This time slot is no longer available. Please choose another.' },
+        { status: 409 }
       );
+    }
 
-      if (!existing.empty) {
-        throw new Error('SLOT_TAKEN');
-      }
-
-      const bookingRef = db.collection('bookings').doc();
-      tx.set(bookingRef, {
-        confirmationCode,
-        customerName: data.customerName,
-        email: data.email,
-        phone: data.phone ?? null,
-        notes: data.notes ?? null,
-        serviceId: data.serviceId,
-        serviceName: service.name,
-        serviceDuration: service.duration,
-        servicePrice: Number(service.price),
-        date: data.date,
-        timeSlot: data.timeSlot,
-        status: 'PENDING',
-        emailSent: false,
-        createdAt: new Date(),
-      });
-
-      return bookingRef.id;
+    // Write the booking
+    const confirmationCode = generateConfirmationCode();
+    const bookingRef = db.collection('bookings').doc();
+    await bookingRef.set({
+      confirmationCode,
+      customerName: data.customerName,
+      email: data.email,
+      phone: data.phone ?? null,
+      notes: data.notes ?? null,
+      serviceId: data.serviceId,
+      serviceName: service.name,
+      serviceDuration: service.duration,
+      servicePrice: Number(service.price),
+      date: data.date,
+      timeSlot: data.timeSlot,
+      status: 'PENDING',
+      emailSent: false,
+      createdAt: new Date(),
     });
 
-    // Send confirmation email (non-blocking)
+    // Send emails (non-blocking — don't fail the booking if email fails)
     try {
       await sendBookingConfirmation({
         customerName: data.customerName,
@@ -98,22 +95,16 @@ export async function POST(req: NextRequest) {
         servicePrice: Number(service.price),
         serviceDuration: service.duration,
       });
-      await db.collection('bookings').doc(result).update({ emailSent: true });
+      await bookingRef.update({ emailSent: true });
     } catch (emailErr) {
       console.error('Email failed:', emailErr);
     }
 
     return NextResponse.json(
-      { id: result, confirmationCode, status: 'PENDING' },
+      { id: bookingRef.id, confirmationCode, status: 'PENDING' },
       { status: 201 }
     );
   } catch (error: unknown) {
-    if (error instanceof Error && error.message === 'SLOT_TAKEN') {
-      return NextResponse.json(
-        { error: 'This time slot is no longer available. Please choose another.' },
-        { status: 409 }
-      );
-    }
     console.error('POST /api/bookings error:', error);
     return NextResponse.json({ error: 'Failed to create booking' }, { status: 500 });
   }
