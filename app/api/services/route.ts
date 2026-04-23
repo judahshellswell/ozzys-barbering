@@ -12,13 +12,13 @@ export async function GET() {
       .orderBy('order', 'asc')
       .get();
 
-    const services: Service[] = snapshot.docs
+    const services = (snapshot.docs
       .map((doc) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data().createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
-      }))
-      .filter((s) => s.active) as Service[];
+      })) as Service[])
+      .filter((s) => s.active);
 
     return NextResponse.json(services);
   } catch (error) {
