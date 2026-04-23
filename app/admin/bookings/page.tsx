@@ -2,47 +2,90 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { useAdminToken, authHeaders } from '@/lib/use-admin-token';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { formatDate, formatTime } from '@/lib/booking-utils';
+import { formatTime } from '@/lib/booking-utils';
 import { businessConfig } from '@/config/business.config';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Booking, BookingStatus } from '@/types';
 
-const STATUS_COLORS: Record<BookingStatus, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-800',
+const { currency } = businessConfig.booking;
+
+const DAY_HEADERS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// Colour for each status — calendar day dot
+function dayColor(statuses: BookingStatus[]): string {
+  if (statuses.includes('CONFIRMED')) return 'bg-green-500 text-white';
+  if (statuses.includes('PENDING'))   return 'bg-amber-400 text-white';
+  if (statuses.includes('COMPLETED')) return 'bg-blue-500 text-white';
+  if (statuses.includes('CANCELLED') || statuses.includes('NO_SHOW')) return 'bg-red-500 text-white';
+  return '';
+}
+
+const STATUS_BADGE: Record<BookingStatus, string> = {
+  PENDING:   'bg-amber-100 text-amber-800',
   CONFIRMED: 'bg-green-100 text-green-800',
-  CANCELLED: 'bg-red-100 text-red-800',
-  COMPLETED: 'bg-blue-100 text-blue-800',
-  NO_SHOW: 'bg-gray-100 text-gray-800',
+  CANCELLED: 'bg-red-100   text-red-800',
+  COMPLETED: 'bg-blue-100  text-blue-800',
+  NO_SHOW:   'bg-gray-100  text-gray-700',
 };
+
+function getDaysInMonth(year: number, month: number) {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+function toDateStr(year: number, month: number, day: number) {
+  return `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+}
 
 export default function AdminBookingsPage() {
   const { getToken } = useAdminToken();
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [allBookings, setAllBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
-  const { currency } = businessConfig.booking;
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  const today = new Date();
+  const [viewYear, setViewYear] = useState(today.getFullYear());
+  const [viewMonth, setViewMonth] = useState(today.getMonth());
 
   const fetchBookings = useCallback(async () => {
     try {
       const token = await getToken();
-      const url = filter === 'all' ? '/api/bookings' : `/api/bookings?status=${filter}`;
-      const res = await fetch(url, { headers: authHeaders(token) });
+      const res = await fetch('/api/bookings', { headers: authHeaders(token) });
       if (!res.ok) throw new Error();
-      setBookings(await res.json());
+      setAllBookings(await res.json());
     } catch {
       toast.error('Failed to load bookings');
     } finally {
       setLoading(false);
     }
-  }, [getToken, filter]);
+  }, [getToken]);
 
   useEffect(() => { fetchBookings(); }, [fetchBookings]);
+
+  // Map date string → statuses for calendar colouring
+  const bookingsByDate = useMemo(() => {
+    const map: Record<string, BookingStatus[]> = {};
+    for (const b of allBookings) {
+      if (!map[b.date]) map[b.date] = [];
+      map[b.date].push(b.status);
+    }
+    return map;
+  }, [allBookings]);
+
+  // Filtered list for the booking table
+  const displayedBookings = useMemo(() => {
+    let list = allBookings;
+    if (selectedDate) list = list.filter((b) => b.date === selectedDate);
+    if (statusFilter !== 'all') list = list.filter((b) => b.status === statusFilter);
+    return list;
+  }, [allBookings, selectedDate, statusFilter]);
 
   async function updateStatus(id: string, status: BookingStatus) {
     try {
@@ -60,63 +103,145 @@ export default function AdminBookingsPage() {
     }
   }
 
+  // Calendar grid
+  const firstDayOfWeek = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = getDaysInMonth(viewYear, viewMonth);
+
+  function prevMonth() {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1); }
+    else setViewMonth(m => m - 1);
+  }
+  function nextMonth() {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear(y => y + 1); }
+    else setViewMonth(m => m + 1);
+  }
+
   return (
     <div className="flex flex-col flex-1">
       <AdminHeader title="Bookings" />
-      <div className="p-6">
-        {/* Filter */}
-        <div className="flex gap-3 mb-6">
-          {['all', 'PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'].map((s) => (
-            <button
-              key={s}
-              onClick={() => setFilter(s)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                filter === s
-                  ? 'bg-[#0f0f0f] text-white'
-                  : 'bg-muted text-muted-foreground hover:bg-muted/80'
-              }`}
-            >
-              {s === 'all' ? 'All' : s.charAt(0) + s.slice(1).toLowerCase()}
-            </button>
-          ))}
-        </div>
+      <div className="p-6 space-y-6 max-w-5xl">
 
-        {loading ? (
-          <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 bg-muted rounded-lg animate-pulse" />
+        {/* Calendar */}
+        <div className="bg-card border border-border rounded-xl p-5">
+          {/* Month nav */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-semibold text-lg">{MONTH_NAMES[viewMonth]} {viewYear}</h2>
+            <div className="flex gap-1">
+              <button onClick={prevMonth} className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button onClick={nextMonth} className="p-1.5 rounded-md hover:bg-muted transition-colors">
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Day headers */}
+          <div className="grid grid-cols-7 mb-1">
+            {DAY_HEADERS.map(d => (
+              <div key={d} className="text-center text-xs font-semibold text-muted-foreground py-1">{d}</div>
             ))}
           </div>
-        ) : bookings.length === 0 ? (
-          <p className="text-muted-foreground text-center py-16">No bookings found.</p>
-        ) : (
-          <div className="space-y-3">
-            {bookings.map((b) => (
-              <div key={b.id} className="bg-card border border-border rounded-lg p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-semibold">{b.customerName}</span>
-                      <Badge className={`text-xs ${STATUS_COLORS[b.status]}`}>
-                        {b.status.toLowerCase()}
-                      </Badge>
+
+          {/* Day cells */}
+          <div className="grid grid-cols-7 gap-1">
+            {/* Empty leading cells */}
+            {Array.from({ length: firstDayOfWeek }).map((_, i) => (
+              <div key={`empty-${i}`} />
+            ))}
+            {/* Day numbers */}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1;
+              const dateStr = toDateStr(viewYear, viewMonth, day);
+              const statuses = bookingsByDate[dateStr] ?? [];
+              const color = dayColor(statuses);
+              const isToday = dateStr === toDateStr(today.getFullYear(), today.getMonth(), today.getDate());
+              const isSelected = dateStr === selectedDate;
+
+              return (
+                <button
+                  key={day}
+                  onClick={() => setSelectedDate(selectedDate === dateStr ? null : dateStr)}
+                  className={`
+                    aspect-square flex items-center justify-center rounded-lg text-sm font-semibold transition-all
+                    ${color || 'hover:bg-muted text-foreground'}
+                    ${isSelected ? 'ring-2 ring-[#6366f1] ring-offset-1' : ''}
+                    ${isToday && !color ? 'border-2 border-[#6366f1] text-[#6366f1]' : ''}
+                  `}
+                >
+                  {day}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Legend */}
+          <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-border text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-green-500 inline-block" />Confirmed</span>
+            <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-amber-400 inline-block" />Pending</span>
+            <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-blue-500 inline-block" />Completed</span>
+            <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-red-500 inline-block" />Cancelled</span>
+          </div>
+        </div>
+
+        {/* Bookings list */}
+        <div>
+          <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
+            <h2 className="font-semibold text-lg">
+              {selectedDate
+                ? `Bookings for ${new Date(selectedDate + 'T00:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}`
+                : 'All Bookings'}
+              {selectedDate && (
+                <button onClick={() => setSelectedDate(null)} className="ml-2 text-xs text-muted-foreground underline font-normal">clear</button>
+              )}
+            </h2>
+            <div className="flex gap-2 flex-wrap">
+              {['all', 'PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'].map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setStatusFilter(s)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    statusFilter === s ? 'bg-[#1e293b] text-white' : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                  }`}
+                >
+                  {s === 'all' ? 'All' : s.charAt(0) + s.slice(1).toLowerCase()}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="space-y-3">
+              {[1,2,3].map(i => <div key={i} className="h-20 bg-muted rounded-lg animate-pulse" />)}
+            </div>
+          ) : displayedBookings.length === 0 ? (
+            <p className="text-muted-foreground text-center py-16">
+              {selectedDate ? 'No bookings on this day.' : 'No bookings found.'}
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {displayedBookings.map((b) => (
+                <div key={b.id} className="bg-card border border-border rounded-lg p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-semibold">{b.customerName}</span>
+                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BADGE[b.status]}`}>
+                          {b.status.charAt(0) + b.status.slice(1).toLowerCase()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {b.serviceName} · {new Date(b.date + 'T00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} at {formatTime(b.timeSlot)} · {currency}{Number(b.servicePrice).toFixed(2)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">{b.email}{b.phone && ` · ${b.phone}`}</p>
+                      <p className="text-xs font-mono text-[#6366f1] mt-0.5">{b.confirmationCode}</p>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {b.serviceName} · {formatDate(b.date)} at {formatTime(b.timeSlot)} · {currency}{b.servicePrice.toFixed(2)}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{b.email} {b.phone && `· ${b.phone}`}</p>
-                    <p className="text-xs font-mono text-[#6366f1] mt-0.5">{b.confirmationCode}</p>
-                  </div>
-                  <div className="flex gap-2 shrink-0">
-                    <Select
-                      value={b.status}
-                      onValueChange={(v) => updateStatus(b.id, v as BookingStatus)}
-                    >
-                      <SelectTrigger className="w-36 h-8 text-xs">
+                    <Select value={b.status} onValueChange={(v) => updateStatus(b.id, v as BookingStatus)}>
+                      <SelectTrigger className="w-36 h-8 text-xs shrink-0">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {(['PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED', 'NO_SHOW'] as BookingStatus[]).map((s) => (
+                        {(['PENDING','CONFIRMED','CANCELLED','COMPLETED','NO_SHOW'] as BookingStatus[]).map((s) => (
                           <SelectItem key={s} value={s} className="text-xs">
                             {s.charAt(0) + s.slice(1).toLowerCase()}
                           </SelectItem>
@@ -124,16 +249,14 @@ export default function AdminBookingsPage() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {b.notes && (
+                    <p className="mt-2 text-xs text-muted-foreground border-t border-border pt-2">Note: {b.notes}</p>
+                  )}
                 </div>
-                {b.notes && (
-                  <p className="mt-2 text-xs text-muted-foreground border-t border-border pt-2">
-                    Note: {b.notes}
-                  </p>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
