@@ -51,3 +51,12 @@ export interface GalleryImage {
   order: number;
   createdAt: string;
 }
+
+export interface Review {
+  id: string;
+  customerName: string;
+  rating: number; // 1–5
+  body: string;
+  service: string | null;
+  createdAt: string;
+}

@@ -7,14 +7,15 @@ import { GalleryGrid } from '@/components/gallery/GalleryGrid';
 import { businessConfig } from '@/config/business.config';
 import { adminDb } from '@/lib/firebase-admin';
 import { Scissors, Star, Clock, CheckCircle } from 'lucide-react';
-import type { Service, GalleryImage } from '@/types';
+import type { Service, GalleryImage, Review } from '@/types';
 
 async function getData() {
   try {
     const db = adminDb();
-    const [servicesSnap, gallerySnap] = await Promise.all([
+    const [servicesSnap, gallerySnap, reviewsSnap] = await Promise.all([
       db.collection('services').orderBy('order', 'asc').limit(4).get(),
       db.collection('galleryImages').orderBy('order', 'asc').limit(6).get(),
+      db.collection('reviews').orderBy('createdAt', 'desc').limit(6).get(),
     ]);
 
     const services = (servicesSnap.docs.map((doc) => ({
@@ -29,14 +30,20 @@ async function getData() {
       createdAt: doc.data().createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
     }));
 
-    return { services, gallery };
+    const reviews: Review[] = reviewsSnap.docs.map((doc) => ({
+      id: doc.id,
+      ...(doc.data() as Omit<Review, 'id'>),
+      createdAt: doc.data().createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
+    }));
+
+    return { services, gallery, reviews };
   } catch {
-    return { services: [], gallery: [] };
+    return { services: [], gallery: [], reviews: [] };
   }
 }
 
 export default async function HomePage() {
-  const { services, gallery } = await getData();
+  const { services, gallery, reviews } = await getData();
 
   return (
     <div className="flex flex-col">
@@ -142,6 +149,35 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Reviews */}
+      {reviews.length > 0 && (
+        <section className="py-16 px-4 sm:px-6 max-w-6xl mx-auto w-full">
+          <div className="text-center mb-10">
+            <h2 className="font-display text-5xl tracking-wide">What Clients Say</h2>
+            <p className="text-muted-foreground mt-1">Real feedback from real customers.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {reviews.map((r) => (
+              <div key={r.id} className="bg-card border border-border rounded-xl p-5 flex flex-col gap-3">
+                <div className="flex gap-0.5">
+                  {[1,2,3,4,5].map((n) => (
+                    <Star
+                      key={n}
+                      className={`h-4 w-4 ${n <= r.rating ? 'fill-amber-400 text-amber-400' : 'text-muted-foreground/20'}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-sm text-foreground leading-relaxed flex-1">&ldquo;{r.body}&rdquo;</p>
+                <div>
+                  <p className="font-semibold text-sm">{r.customerName}</p>
+                  {r.service && <p className="text-xs text-muted-foreground">{r.service}</p>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Gallery Preview */}
       {gallery.length > 0 && (

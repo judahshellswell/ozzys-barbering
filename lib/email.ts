@@ -19,6 +19,11 @@ interface BookingEmailData {
   serviceDuration: number;
 }
 
+function cancelUrl(code: string, email: string): string {
+  const base = process.env.NEXT_PUBLIC_APP_URL ?? 'https://ozzys-barbering.vercel.app';
+  return `${base}/my-booking?code=${encodeURIComponent(code)}&email=${encodeURIComponent(email)}`;
+}
+
 function customerHtml(data: BookingEmailData): string {
   const { currency } = businessConfig.booking;
   return `<!DOCTYPE html>
@@ -64,7 +69,10 @@ function customerHtml(data: BookingEmailData): string {
           <tr><td>Price</td><td>${currency}${data.servicePrice.toFixed(2)}</td></tr>
         </table>
       </div>
-      <p style="font-size:13px;color:#94a3b8">Need to cancel? Please contact us at least ${businessConfig.booking.cancellationPolicyHours} hours before your appointment.</p>
+      <p style="font-size:13px;color:#94a3b8">Need to cancel or view your booking? Use the button below — please cancel at least ${businessConfig.booking.cancellationPolicyHours} hours before your appointment.</p>
+      <div style="text-align:center;margin:20px 0">
+        <a href="${cancelUrl(data.confirmationCode, data.email)}" style="display:inline-block;background:#6366f1;color:#fff;text-decoration:none;padding:12px 28px;border-radius:8px;font-size:14px;font-weight:600">View / Cancel Booking</a>
+      </div>
       <p style="font-size:13px;color:#94a3b8">📞 ${businessConfig.contact.phone} &nbsp;|&nbsp; ✉️ ${businessConfig.contact.email}</p>
     </div>
     <div class="footer">

@@ -2,16 +2,18 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Scissors, CalendarDays, Settings, Image, LayoutDashboard, LogOut } from 'lucide-react';
+import { Scissors, CalendarDays, Settings, Image, LayoutDashboard, LogOut, BarChart2, Star } from 'lucide-react';
 import { businessConfig } from '@/config/business.config';
 import { signOut } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 
 const links = [
+  { href: '/admin/dashboard', label: 'Dashboard', icon: BarChart2 },
   { href: '/admin/bookings', label: 'Bookings', icon: CalendarDays },
   { href: '/admin/services', label: 'Services', icon: Settings },
   { href: '/admin/availability', label: 'Availability', icon: LayoutDashboard },
   { href: '/admin/gallery', label: 'Gallery', icon: Image },
+  { href: '/admin/reviews', label: 'Reviews', icon: Star },
 ];
 
 export function AdminSidebar() {
