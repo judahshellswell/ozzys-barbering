@@ -1,9 +1,11 @@
 import type { Availability, Booking } from '@/types';
 
+const SLOT_INTERVAL_MINUTES = 30;
+const HAIRCUT_DURATION_MINUTES = 60;
+
 export function generateTimeSlots(
   startTime: string,
   endTime: string,
-  durationMinutes: number
 ): string[] {
   const slots: string[] = [];
   const [startH, startM] = startTime.split(':').map(Number);
@@ -12,11 +14,12 @@ export function generateTimeSlots(
   let current = startH * 60 + startM;
   const end = endH * 60 + endM;
 
-  while (current + durationMinutes <= end) {
+  // Generate a slot every 30 min as long as the full haircut fits before closing
+  while (current + HAIRCUT_DURATION_MINUTES <= end) {
     const h = Math.floor(current / 60);
     const m = current % 60;
     slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
-    current += durationMinutes;
+    current += SLOT_INTERVAL_MINUTES;
   }
 
   return slots;
@@ -25,31 +28,20 @@ export function generateTimeSlots(
 export function getAvailableSlots(
   availability: Availability,
   existingBookings: Booking[],
-  durationMinutes: number
+  _durationMinutes: number
 ): string[] {
-  const allSlots = generateTimeSlots(
-    availability.startTime,
-    availability.endTime,
-    durationMinutes
-  );
+  const allSlots = generateTimeSlots(availability.startTime, availability.endTime);
 
-  const bookedSlots = new Set(
-    existingBookings
-      .filter((b) => b.status !== 'CANCELLED')
-      .map((b) => b.timeSlot)
-  );
+  const activeBookings = existingBookings.filter((b) => b.status !== 'CANCELLED');
 
   return allSlots.filter((slot) => {
-    if (bookedSlots.has(slot)) return false;
-
-    // Check if any existing booking overlaps this slot's time range
     const slotStart = timeToMinutes(slot);
-    const slotEnd = slotStart + durationMinutes;
+    const slotEnd = slotStart + HAIRCUT_DURATION_MINUTES;
 
-    for (const booking of existingBookings) {
-      if (booking.status === 'CANCELLED') continue;
+    for (const booking of activeBookings) {
       const bookedStart = timeToMinutes(booking.timeSlot);
-      const bookedEnd = bookedStart + booking.serviceDuration;
+      const bookedEnd = bookedStart + HAIRCUT_DURATION_MINUTES;
+      // Block any slot whose time range overlaps the booked haircut window
       if (slotStart < bookedEnd && slotEnd > bookedStart) return false;
     }
 
