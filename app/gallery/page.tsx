@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { adminDb } from '@/lib/firebase-admin';
 import { GalleryGrid } from '@/components/gallery/GalleryGrid';
 import { LinkButton } from '@/components/ui/link-button';
