@@ -1,10 +1,10 @@
-export const dynamic = 'force-dynamic';
-
+import { connection } from 'next/server';
 import { BookingWizard } from '@/components/booking/BookingWizard';
 import { adminDb } from '@/lib/firebase-admin';
 import type { Service } from '@/types';
 
 async function getServices(): Promise<Service[]> {
+  await connection();
   try {
     const db = adminDb();
     const snapshot = await db.collection('services').orderBy('order', 'asc').get();
