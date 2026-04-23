@@ -70,7 +70,7 @@ export function CustomerDetailsForm({ booking, onSuccess, onBack }: CustomerDeta
       <p className="text-muted-foreground mb-6">Almost done — just fill in your info.</p>
 
       {/* Summary */}
-      <div className="bg-[#0f0f0f] text-white rounded-lg p-4 mb-6 text-sm">
+      <div className="bg-[#1e293b] text-white rounded-lg p-4 mb-6 text-sm">
         <div className="grid grid-cols-2 gap-2">
           <div><span className="text-gray-400">Service</span><p className="font-medium">{booking.service?.name}</p></div>
           <div><span className="text-gray-400">Price</span><p className="font-medium text-[#6366f1]">{currency}{booking.service?.price.toFixed(2)}</p></div>

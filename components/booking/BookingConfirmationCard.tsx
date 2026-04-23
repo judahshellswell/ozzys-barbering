@@ -19,7 +19,7 @@ export function BookingConfirmationCard({ booking }: { booking: BookingState }) 
       </p>
 
       {/* Confirmation code */}
-      <div className="bg-[#0f0f0f] text-white rounded-xl p-6 mb-6 inline-block w-full max-w-sm">
+      <div className="bg-[#1e293b] text-white rounded-xl p-6 mb-6 inline-block w-full max-w-sm">
         <div className="flex items-center justify-center gap-2 mb-1">
           <Scissors className="h-4 w-4 text-[#6366f1]" />
           <span className="text-xs text-gray-400 uppercase tracking-widest">Confirmation Code</span>
@@ -56,7 +56,7 @@ export function BookingConfirmationCard({ booking }: { booking: BookingState }) 
 
       <LinkButton
         href="/"
-        className="bg-[#0f0f0f] hover:bg-[#1a1a1a] text-white border-transparent"
+        className="bg-[#6366f1] hover:bg-[#4f46e5] text-white border-transparent"
       >
         Back to Home
       </LinkButton>

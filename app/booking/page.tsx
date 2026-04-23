@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { BookingWizard } from '@/components/booking/BookingWizard';
 import { adminDb } from '@/lib/firebase-admin';
 import type { Service } from '@/types';
@@ -5,12 +7,12 @@ import type { Service } from '@/types';
 async function getServices(): Promise<Service[]> {
   try {
     const db = adminDb();
-    const snapshot = await db.collection('services').where('active', '==', true).orderBy('order', 'asc').get();
-    return snapshot.docs.map((doc) => ({
+    const snapshot = await db.collection('services').orderBy('order', 'asc').get();
+    return (snapshot.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Omit<Service, 'id'>),
       createdAt: doc.data().createdAt?.toDate?.()?.toISOString() ?? new Date().toISOString(),
-    }));
+    })) as Service[]).filter((s) => s.active);
   } catch {
     return [];
   }
