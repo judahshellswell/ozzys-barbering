@@ -17,6 +17,7 @@ export default function AdminGalleryPage() {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [caption, setCaption] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -33,20 +34,55 @@ export default function AdminGalleryPage() {
     if (!file) return;
 
     setUploading(true);
+    setUploadProgress(0);
     try {
       const token = await getToken();
-      const fd = new FormData();
-      fd.append('file', file);
-      if (caption) fd.append('caption', caption);
+      const isVideo = file.type.startsWith('video/');
 
-      const res = await fetch('/api/gallery', {
-        method: 'POST',
-        headers: authHeaders(token),
-        body: fd,
-      });
+      if (isVideo) {
+        // For videos: get a signed URL and upload directly to Firebase Storage
+        // This bypasses Vercel's 4.5 MB body limit entirely
+        const urlRes = await fetch('/api/gallery/upload-url', {
+          method: 'POST',
+          headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, contentType: file.type, caption }),
+        });
+        if (!urlRes.ok) throw new Error('Failed to get upload URL');
+        const { signedUrl, storagePath } = await urlRes.json();
 
-      if (!res.ok) throw new Error();
-      toast.success('Image uploaded');
+        // Upload directly to Firebase Storage with XHR so we can track progress
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('PUT', signedUrl);
+          xhr.setRequestHeader('Content-Type', file.type);
+          xhr.upload.onprogress = (ev) => {
+            if (ev.lengthComputable) setUploadProgress(Math.round((ev.loaded / ev.total) * 100));
+          };
+          xhr.onload = () => (xhr.status === 200 ? resolve() : reject(new Error(`Upload failed: ${xhr.status}`)));
+          xhr.onerror = () => reject(new Error('Upload failed'));
+          xhr.send(file);
+        });
+
+        // Make the file publicly readable
+        await fetch('/api/gallery/make-public', {
+          method: 'POST',
+          headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ storagePath }),
+        });
+      } else {
+        // For images: use the original multipart route (fast, no size concern)
+        const fd = new FormData();
+        fd.append('file', file);
+        if (caption) fd.append('caption', caption);
+        const res = await fetch('/api/gallery', {
+          method: 'POST',
+          headers: authHeaders(token),
+          body: fd,
+        });
+        if (!res.ok) throw new Error();
+      }
+
+      toast.success(isVideo ? 'Video uploaded' : 'Photo uploaded');
       setCaption('');
       if (fileRef.current) fileRef.current.value = '';
       fetchImages();
@@ -54,6 +90,7 @@ export default function AdminGalleryPage() {
       toast.error('Upload failed');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   }
 
@@ -89,7 +126,7 @@ export default function AdminGalleryPage() {
             <label className="cursor-pointer">
               <span className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[#6366f1] hover:bg-[#4f46e5] text-black transition-colors cursor-pointer ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
                 <Upload className="h-4 w-4" />
-                {uploading ? 'Uploading...' : 'Choose Photo'}
+                {uploading ? (uploadProgress > 0 ? `${uploadProgress}%` : 'Uploading...') : 'Choose File'}
               </span>
               <input
                 ref={fileRef}
@@ -101,6 +138,17 @@ export default function AdminGalleryPage() {
               />
             </label>
           </div>
+          {uploading && uploadProgress > 0 && (
+            <div className="mt-3">
+              <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#6366f1] rounded-full transition-all duration-300"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Uploading video… {uploadProgress}%</p>
+            </div>
+          )}
         </div>
 
         {/* Gallery grid */}
