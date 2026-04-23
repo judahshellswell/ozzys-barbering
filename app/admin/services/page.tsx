@@ -103,8 +103,8 @@ export default function AdminServicesPage() {
   return (
     <div className="flex flex-col flex-1">
       <AdminHeader title="Services" />
-      <div className="p-6">
-        <div className="flex justify-end mb-6">
+      <div className="p-3 sm:p-6">
+        <div className="flex justify-end mb-4 sm:mb-6">
           <Button onClick={openCreate} className="bg-[#6366f1] hover:bg-[#4f46e5] text-black gap-2">
             <Plus className="h-4 w-4" />
             Add Service
@@ -118,15 +118,15 @@ export default function AdminServicesPage() {
         ) : (
           <div className="space-y-3">
             {services.map((s) => (
-              <div key={s.id} className="bg-card border border-border rounded-lg p-4 flex items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold">{s.name}</span>
+              <div key={s.id} className="bg-card border border-border rounded-lg p-3 sm:p-4 flex items-start sm:items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-sm sm:text-base">{s.name}</span>
                     <Badge variant={s.active ? 'default' : 'secondary'} className="text-xs">
                       {s.active ? 'Active' : 'Hidden'}
                     </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-0.5">
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                     {s.duration} min · {currency}{s.price.toFixed(2)}
                     {s.description && ` · ${s.description}`}
                   </p>

@@ -72,14 +72,14 @@ export default function AdminGalleryPage() {
   return (
     <div className="flex flex-col flex-1">
       <AdminHeader title="Gallery" />
-      <div className="p-6">
+      <div className="p-3 sm:p-6">
         {/* Upload section */}
-        <div className="bg-card border border-border rounded-xl p-5 mb-6">
-          <h2 className="font-semibold mb-4 flex items-center gap-2">
+        <div className="bg-card border border-border rounded-xl p-3 sm:p-5 mb-4 sm:mb-6">
+          <h2 className="font-semibold mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
             <ImagePlus className="h-4 w-4 text-[#6366f1]" />
             Upload New Photo
           </h2>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             <Input
               placeholder="Caption (optional)"
               value={caption}
@@ -87,7 +87,7 @@ export default function AdminGalleryPage() {
               className="sm:flex-1"
             />
             <label className="cursor-pointer">
-              <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#6366f1] hover:bg-[#4f46e5] text-black transition-colors cursor-pointer ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+              <span className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[#6366f1] hover:bg-[#4f46e5] text-black transition-colors cursor-pointer ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
                 <Upload className="h-4 w-4" />
                 {uploading ? 'Uploading...' : 'Choose Photo'}
               </span>
@@ -105,7 +105,7 @@ export default function AdminGalleryPage() {
 
         {/* Gallery grid */}
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {[1,2,3,4,5,6].map(i => <div key={i} className="aspect-square bg-muted rounded-lg animate-pulse" />)}
           </div>
         ) : images.length === 0 ? (
@@ -114,7 +114,7 @@ export default function AdminGalleryPage() {
             <p>No photos yet. Upload your first one!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {images.map((img) => (
               <div key={img.id} className="relative group aspect-square rounded-lg overflow-hidden bg-muted">
                 <Image

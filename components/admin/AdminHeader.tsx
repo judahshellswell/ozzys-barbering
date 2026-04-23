@@ -17,10 +17,10 @@ export function AdminHeader({ title }: AdminHeaderProps) {
   }, []);
 
   return (
-    <div className="bg-card border-b border-border px-6 py-4 flex items-center justify-between">
-      <h1 className="font-display text-2xl tracking-wide">{title}</h1>
+    <div className="bg-card border-b border-border px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4">
+      <h1 className="font-display text-xl sm:text-2xl tracking-wide">{title}</h1>
       {user && (
-        <span className="text-sm text-muted-foreground">{user.email}</span>
+        <span className="text-xs sm:text-sm text-muted-foreground truncate max-w-[160px] sm:max-w-none">{user.email}</span>
       )}
     </div>
   );

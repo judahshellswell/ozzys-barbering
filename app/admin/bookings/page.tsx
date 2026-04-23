@@ -119,13 +119,13 @@ export default function AdminBookingsPage() {
   return (
     <div className="flex flex-col flex-1">
       <AdminHeader title="Bookings" />
-      <div className="p-6 space-y-6 max-w-5xl">
+      <div className="p-3 sm:p-6 space-y-4 sm:space-y-6 max-w-5xl">
 
         {/* Calendar */}
-        <div className="bg-card border border-border rounded-xl p-5">
+        <div className="bg-card border border-border rounded-xl p-3 sm:p-5">
           {/* Month nav */}
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-semibold text-lg">{MONTH_NAMES[viewMonth]} {viewYear}</h2>
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <h2 className="font-semibold text-base sm:text-lg">{MONTH_NAMES[viewMonth]} {viewYear}</h2>
             <div className="flex gap-1">
               <button onClick={prevMonth} className="p-1.5 rounded-md hover:bg-muted transition-colors">
                 <ChevronLeft className="h-4 w-4" />
@@ -139,12 +139,12 @@ export default function AdminBookingsPage() {
           {/* Day headers */}
           <div className="grid grid-cols-7 mb-1">
             {DAY_HEADERS.map(d => (
-              <div key={d} className="text-center text-xs font-semibold text-muted-foreground py-1">{d}</div>
+              <div key={d} className="text-center text-[10px] sm:text-xs font-semibold text-muted-foreground py-1">{d}</div>
             ))}
           </div>
 
           {/* Day cells */}
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
             {/* Empty leading cells */}
             {Array.from({ length: firstDayOfWeek }).map((_, i) => (
               <div key={`empty-${i}`} />
@@ -163,7 +163,7 @@ export default function AdminBookingsPage() {
                   key={day}
                   onClick={() => setSelectedDate(selectedDate === dateStr ? null : dateStr)}
                   className={`
-                    aspect-square flex items-center justify-center rounded-lg text-sm font-semibold transition-all
+                    aspect-square flex items-center justify-center rounded-md sm:rounded-lg text-xs sm:text-sm font-semibold transition-all
                     ${color || 'hover:bg-muted text-foreground'}
                     ${isSelected ? 'ring-2 ring-[#6366f1] ring-offset-1' : ''}
                     ${isToday && !color ? 'border-2 border-[#6366f1] text-[#6366f1]' : ''}
@@ -176,18 +176,18 @@ export default function AdminBookingsPage() {
           </div>
 
           {/* Legend */}
-          <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t border-border text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-green-500 inline-block" />Confirmed</span>
-            <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-amber-400 inline-block" />Pending</span>
-            <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-blue-500 inline-block" />Completed</span>
-            <span className="flex items-center gap-1.5"><span className="w-4 h-4 rounded bg-red-500 inline-block" />Cancelled</span>
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-green-500 inline-block shrink-0" />Confirmed</span>
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-amber-400 inline-block shrink-0" />Pending</span>
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-blue-500 inline-block shrink-0" />Completed</span>
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-red-500 inline-block shrink-0" />Cancelled</span>
           </div>
         </div>
 
         {/* Bookings list */}
         <div>
-          <div className="flex items-center justify-between mb-4 gap-4 flex-wrap">
-            <h2 className="font-semibold text-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4 gap-2 sm:gap-4">
+            <h2 className="font-semibold text-base sm:text-lg">
               {selectedDate
                 ? `Bookings for ${new Date(selectedDate + 'T00:00').toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}`
                 : 'All Bookings'}
@@ -195,12 +195,12 @@ export default function AdminBookingsPage() {
                 <button onClick={() => setSelectedDate(null)} className="ml-2 text-xs text-muted-foreground underline font-normal">clear</button>
               )}
             </h2>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex gap-1.5 flex-wrap">
               {['all', 'PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED'].map((s) => (
                 <button
                   key={s}
                   onClick={() => setStatusFilter(s)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                  className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                     statusFilter === s ? 'bg-[#1e293b] text-white' : 'bg-muted text-muted-foreground hover:bg-muted/80'
                   }`}
                 >
@@ -221,23 +221,27 @@ export default function AdminBookingsPage() {
           ) : (
             <div className="space-y-3">
               {displayedBookings.map((b) => (
-                <div key={b.id} className="bg-card border border-border rounded-lg p-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-semibold">{b.customerName}</span>
+                <div key={b.id} className="bg-card border border-border rounded-lg p-3 sm:p-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 justify-between">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <span className="font-semibold text-sm sm:text-base">{b.customerName}</span>
                         <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_BADGE[b.status]}`}>
                           {b.status.charAt(0) + b.status.slice(1).toLowerCase()}
                         </span>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {b.serviceName} · {new Date(b.date + 'T00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} at {formatTime(b.timeSlot)} · {currency}{Number(b.servicePrice).toFixed(2)}
+                      <p className="text-xs sm:text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground">{b.serviceName}</span>
+                        <span className="mx-1">·</span>
+                        {new Date(b.date + 'T00:00').toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} at {formatTime(b.timeSlot)}
+                        <span className="mx-1">·</span>
+                        {currency}{Number(b.servicePrice).toFixed(2)}
                       </p>
-                      <p className="text-xs text-muted-foreground">{b.email}{b.phone && ` · ${b.phone}`}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">{b.email}{b.phone && ` · ${b.phone}`}</p>
                       <p className="text-xs font-mono text-[#6366f1] mt-0.5">{b.confirmationCode}</p>
                     </div>
                     <Select value={b.status} onValueChange={(v) => updateStatus(b.id, v as BookingStatus)}>
-                      <SelectTrigger className="w-36 h-8 text-xs shrink-0">
+                      <SelectTrigger className="w-full sm:w-36 h-8 text-xs shrink-0">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
