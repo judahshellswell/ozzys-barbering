@@ -24,7 +24,7 @@ export const businessConfig = {
   contact: {
     phone: '+44 7797851386',
     email: 'ozzy.stewartsunley@gmail.com',
-    instagram: 'https://www.instagram.com/0zzy_s_sunley/',
+    instagram: 'https://www.instagram.com/ozzy_ss_barbering/?hl=en',
     tiktok: 'https://www.tiktok.com/@0_sunley',
   },
 
