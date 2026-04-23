@@ -44,17 +44,15 @@ export async function GET(req: NextRequest) {
     }
     const availability = availDoc.data() as Availability;
 
-    // Fetch existing non-cancelled bookings for this date
+    // Fetch existing bookings for this date, filter cancelled in app code to avoid composite index
     const bookingsSnap = await db
       .collection('bookings')
       .where('date', '==', date)
-      .where('status', '!=', 'CANCELLED')
       .get();
 
-    const existingBookings: Booking[] = bookingsSnap.docs.map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as Omit<Booking, 'id'>),
-    }));
+    const existingBookings: Booking[] = bookingsSnap.docs
+      .map((doc) => ({ id: doc.id, ...(doc.data() as Omit<Booking, 'id'>) }))
+      .filter((b) => b.status !== 'CANCELLED');
 
     const slots = getAvailableSlots(availability, existingBookings, service.duration);
 
