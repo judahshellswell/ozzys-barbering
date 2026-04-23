@@ -105,7 +105,7 @@ export default function AdminBookingsPage() {
                       {b.serviceName} · {formatDate(b.date)} at {formatTime(b.timeSlot)} · {currency}{b.servicePrice.toFixed(2)}
                     </p>
                     <p className="text-xs text-muted-foreground">{b.email} {b.phone && `· ${b.phone}`}</p>
-                    <p className="text-xs font-mono text-[#c0392b] mt-0.5">{b.confirmationCode}</p>
+                    <p className="text-xs font-mono text-[#6366f1] mt-0.5">{b.confirmationCode}</p>
                   </div>
                   <div className="flex gap-2 shrink-0">
                     <Select

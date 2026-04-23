@@ -23,7 +23,7 @@ function FacebookIcon({ className }: { className?: string }) {
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-[#0f0f0f] text-white py-16 px-4 text-center">
+      <div className="bg-[#1e293b] text-white py-16 px-4 text-center">
         <h1 className="font-display text-6xl tracking-wide">Get in Touch</h1>
         <p className="text-gray-400 mt-3">Questions, feedback, or just want to say hi?</p>
       </div>
@@ -38,8 +38,8 @@ export default function ContactPage() {
           <h2 className="font-display text-3xl tracking-wide mb-6">Find Us</h2>
           <ul className="space-y-5">
             <li className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#c0392b]/10 flex items-center justify-center shrink-0">
-                <MapPin className="h-5 w-5 text-[#c0392b]" />
+              <div className="w-10 h-10 rounded-full bg-[#6366f1]/10 flex items-center justify-center shrink-0">
+                <MapPin className="h-5 w-5 text-[#6366f1]" />
               </div>
               <div>
                 <p className="font-semibold">Address</p>
@@ -47,45 +47,45 @@ export default function ContactPage() {
               </div>
             </li>
             <li className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#c0392b]/10 flex items-center justify-center shrink-0">
-                <Phone className="h-5 w-5 text-[#c0392b]" />
+              <div className="w-10 h-10 rounded-full bg-[#6366f1]/10 flex items-center justify-center shrink-0">
+                <Phone className="h-5 w-5 text-[#6366f1]" />
               </div>
               <div>
                 <p className="font-semibold">Phone</p>
-                <a href={`tel:${businessConfig.contact.phone}`} className="text-muted-foreground text-sm hover:text-[#c0392b] transition-colors">
+                <a href={`tel:${businessConfig.contact.phone}`} className="text-muted-foreground text-sm hover:text-[#6366f1] transition-colors">
                   {businessConfig.contact.phone}
                 </a>
               </div>
             </li>
             <li className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#c0392b]/10 flex items-center justify-center shrink-0">
-                <Mail className="h-5 w-5 text-[#c0392b]" />
+              <div className="w-10 h-10 rounded-full bg-[#6366f1]/10 flex items-center justify-center shrink-0">
+                <Mail className="h-5 w-5 text-[#6366f1]" />
               </div>
               <div>
                 <p className="font-semibold">Email</p>
-                <a href={`mailto:${businessConfig.contact.email}`} className="text-muted-foreground text-sm hover:text-[#c0392b] transition-colors">
+                <a href={`mailto:${businessConfig.contact.email}`} className="text-muted-foreground text-sm hover:text-[#6366f1] transition-colors">
                   {businessConfig.contact.email}
                 </a>
               </div>
             </li>
             <li className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#c0392b]/10 flex items-center justify-center shrink-0">
-                <InstagramIcon className="h-5 w-5 text-[#c0392b]" />
+              <div className="w-10 h-10 rounded-full bg-[#6366f1]/10 flex items-center justify-center shrink-0">
+                <InstagramIcon className="h-5 w-5 text-[#6366f1]" />
               </div>
               <div>
                 <p className="font-semibold">Instagram</p>
-                <a href={businessConfig.contact.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground text-sm hover:text-[#c0392b] transition-colors">
+                <a href={businessConfig.contact.instagram} target="_blank" rel="noopener noreferrer" className="text-muted-foreground text-sm hover:text-[#6366f1] transition-colors">
                   @ozzysbarbering
                 </a>
               </div>
             </li>
             <li className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#c0392b]/10 flex items-center justify-center shrink-0">
-                <FacebookIcon className="h-5 w-5 text-[#c0392b]" />
+              <div className="w-10 h-10 rounded-full bg-[#6366f1]/10 flex items-center justify-center shrink-0">
+                <FacebookIcon className="h-5 w-5 text-[#6366f1]" />
               </div>
               <div>
                 <p className="font-semibold">Facebook</p>
-                <a href={businessConfig.contact.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground text-sm hover:text-[#c0392b] transition-colors">
+                <a href={businessConfig.contact.facebook} target="_blank" rel="noopener noreferrer" className="text-muted-foreground text-sm hover:text-[#6366f1] transition-colors">
                   Ozzy&apos;s Barbering
                 </a>
               </div>

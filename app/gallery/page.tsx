@@ -22,7 +22,7 @@ export default async function GalleryPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-[#0f0f0f] text-white py-16 px-4 text-center">
+      <div className="bg-[#1e293b] text-white py-16 px-4 text-center">
         <h1 className="font-display text-6xl tracking-wide">Gallery</h1>
         <p className="text-gray-400 mt-3">Fresh cuts. Clean fades. Real results.</p>
       </div>
@@ -34,7 +34,7 @@ export default async function GalleryPage() {
           <p className="text-muted-foreground mb-4">Like what you see? Book your cut today.</p>
           <LinkButton
             href="/booking"
-            className="bg-[#c0392b] hover:bg-[#a93226] text-black font-semibold px-8 py-3 border-transparent"
+            className="bg-[#6366f1] hover:bg-[#4f46e5] text-black font-semibold px-8 py-3 border-transparent"
           >
             Book Now
           </LinkButton>

@@ -27,7 +27,7 @@ export function GalleryGrid({ images }: GalleryGridProps) {
           <button
             key={image.id}
             onClick={() => setLightboxIndex(i)}
-            className="block w-full break-inside-avoid rounded-lg overflow-hidden cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#c0392b]"
+            className="block w-full break-inside-avoid rounded-lg overflow-hidden cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#6366f1]"
           >
             <div className="relative">
               <Image

@@ -8,7 +8,7 @@ export const businessConfig = {
 
   colors: {
     primary: '#0f0f0f',
-    accent: '#c0392b',
+    accent: '#6366f1',
     background: '#f9f6f1',
     surface: '#ffffff',
     text: '#0f0f0f',

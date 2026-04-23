@@ -28,7 +28,7 @@ export function AdminSidebar() {
       {/* Logo */}
       <div className="px-5 py-5 border-b border-sidebar-border">
         <div className="flex items-center gap-2">
-          <Scissors className="h-5 w-5 text-[#c0392b]" />
+          <Scissors className="h-5 w-5 text-[#6366f1]" />
           <span className="font-display text-sm tracking-widest text-white">
             {businessConfig.name.split(' ')[0].toUpperCase()}
           </span>
@@ -44,7 +44,7 @@ export function AdminSidebar() {
             href={href}
             className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${
               pathname.startsWith(href)
-                ? 'bg-sidebar-accent text-[#c0392b]'
+                ? 'bg-sidebar-accent text-[#6366f1]'
                 : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground'
             }`}
           >

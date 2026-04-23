@@ -42,8 +42,8 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-[#0f0f0f] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#c0392b]/10 mb-4">
-            <Scissors className="h-7 w-7 text-[#c0392b]" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#6366f1]/10 mb-4">
+            <Scissors className="h-7 w-7 text-[#6366f1]" />
           </div>
           <h1 className="font-display text-3xl text-white tracking-widest">
             {businessConfig.name.toUpperCase()}
@@ -81,7 +81,7 @@ export default function AdminLoginPage() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#c0392b] hover:bg-[#a93226] text-black font-semibold"
+            className="w-full bg-[#6366f1] hover:bg-[#4f46e5] text-black font-semibold"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </Button>

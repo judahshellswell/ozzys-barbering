@@ -55,9 +55,9 @@ export function BookingWizard({ services }: { services: Service[] }) {
                 <div
                   className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${
                     i < currentStepIndex
-                      ? 'bg-[#c0392b] text-black'
+                      ? 'bg-[#6366f1] text-black'
                       : i === currentStepIndex
-                      ? 'bg-[#0f0f0f] text-white ring-2 ring-[#c0392b]'
+                      ? 'bg-[#0f0f0f] text-white ring-2 ring-[#6366f1]'
                       : 'bg-muted text-muted-foreground'
                   }`}
                 >
@@ -71,7 +71,7 @@ export function BookingWizard({ services }: { services: Service[] }) {
                   {s.label}
                 </span>
                 {i < STEPS.length - 1 && (
-                  <div className={`h-px w-6 sm:w-12 ${i < currentStepIndex ? 'bg-[#c0392b]' : 'bg-border'}`} />
+                  <div className={`h-px w-6 sm:w-12 ${i < currentStepIndex ? 'bg-[#6366f1]' : 'bg-border'}`} />
                 )}
               </div>
             ))}
@@ -80,7 +80,7 @@ export function BookingWizard({ services }: { services: Service[] }) {
           {/* Summary chips */}
           {booking.service && (
             <div className="flex flex-wrap gap-2 text-xs">
-              <span className="bg-[#0f0f0f] text-[#c0392b] px-3 py-1 rounded-full">
+              <span className="bg-[#0f0f0f] text-[#6366f1] px-3 py-1 rounded-full">
                 {booking.service.name}
               </span>
               {booking.date && (

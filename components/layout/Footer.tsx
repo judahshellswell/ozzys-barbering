@@ -27,7 +27,7 @@ export function Footer() {
         {/* Brand */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <Scissors className="h-5 w-5 text-[#c0392b]" />
+            <Scissors className="h-5 w-5 text-[#6366f1]" />
             <span className="font-display text-xl tracking-widest text-white">
               {businessConfig.name.toUpperCase()}
             </span>
@@ -40,7 +40,7 @@ export function Footer() {
               href={businessConfig.contact.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-[#c0392b] transition-colors"
+              className="text-gray-500 hover:text-[#6366f1] transition-colors"
             >
               <InstagramIcon className="h-5 w-5" />
             </a>
@@ -48,7 +48,7 @@ export function Footer() {
               href={businessConfig.contact.facebook}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-[#c0392b] transition-colors"
+              className="text-gray-500 hover:text-[#6366f1] transition-colors"
             >
               <FacebookIcon className="h-5 w-5" />
             </a>
@@ -61,7 +61,7 @@ export function Footer() {
           <ul className="space-y-2">
             {businessConfig.nav.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="text-sm hover:text-[#c0392b] transition-colors">
+                <Link href={item.href} className="text-sm hover:text-[#6366f1] transition-colors">
                   {item.label}
                 </Link>
               </li>
@@ -74,18 +74,18 @@ export function Footer() {
           <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Contact</h4>
           <ul className="space-y-3">
             <li className="flex items-start gap-2 text-sm">
-              <MapPin className="h-4 w-4 text-[#c0392b] mt-0.5 shrink-0" />
+              <MapPin className="h-4 w-4 text-[#6366f1] mt-0.5 shrink-0" />
               {businessConfig.contact.address}
             </li>
             <li className="flex items-center gap-2 text-sm">
-              <Phone className="h-4 w-4 text-[#c0392b] shrink-0" />
-              <a href={`tel:${businessConfig.contact.phone}`} className="hover:text-[#c0392b] transition-colors">
+              <Phone className="h-4 w-4 text-[#6366f1] shrink-0" />
+              <a href={`tel:${businessConfig.contact.phone}`} className="hover:text-[#6366f1] transition-colors">
                 {businessConfig.contact.phone}
               </a>
             </li>
             <li className="flex items-center gap-2 text-sm">
-              <Mail className="h-4 w-4 text-[#c0392b] shrink-0" />
-              <a href={`mailto:${businessConfig.contact.email}`} className="hover:text-[#c0392b] transition-colors">
+              <Mail className="h-4 w-4 text-[#6366f1] shrink-0" />
+              <a href={`mailto:${businessConfig.contact.email}`} className="hover:text-[#6366f1] transition-colors">
                 {businessConfig.contact.email}
               </a>
             </li>

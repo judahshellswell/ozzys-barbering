@@ -24,20 +24,18 @@ export function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-[#0f0f0f] shadow-lg' : 'bg-[#0f0f0f]/95'
+        scrolled ? 'bg-white shadow-md border-b border-gray-100' : 'bg-white/95 backdrop-blur-sm'
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <Scissors className="h-5 w-5 text-[#c0392b]" />
-            <span className="font-display text-xl tracking-widest text-white group-hover:text-[#c0392b] transition-colors">
+            <Scissors className="h-5 w-5 text-[#6366f1]" />
+            <span className="font-display text-xl tracking-widest text-[#1e293b] group-hover:text-[#6366f1] transition-colors">
               {businessConfig.name.toUpperCase()}
             </span>
           </Link>
 
-          {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1">
             {businessConfig.nav.map((item) => {
               const highlighted = 'highlight' in item && item.highlight;
@@ -47,7 +45,7 @@ export function Navbar() {
                   href={item.href}
                   className={cn(
                     buttonVariants({ size: 'sm' }),
-                    'ml-4 bg-[#c0392b] hover:bg-[#a93226] text-black font-semibold border-transparent'
+                    'ml-4 bg-[#6366f1] hover:bg-[#4f46e5] text-white font-semibold border-transparent'
                   )}
                 >
                   {item.label}
@@ -58,8 +56,8 @@ export function Navbar() {
                   href={item.href}
                   className={`px-4 py-2 text-sm font-medium transition-colors rounded-md ${
                     pathname === item.href
-                      ? 'text-[#c0392b]'
-                      : 'text-gray-300 hover:text-white'
+                      ? 'text-[#6366f1]'
+                      : 'text-slate-600 hover:text-[#1e293b]'
                   }`}
                 >
                   {item.label}
@@ -68,9 +66,8 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Mobile hamburger */}
           <button
-            className="md:hidden p-2 text-gray-300 hover:text-white"
+            className="md:hidden p-2 text-slate-600 hover:text-[#1e293b]"
             onClick={() => setOpen(!open)}
             aria-label="Toggle menu"
           >
@@ -79,9 +76,8 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {open && (
-        <div className="md:hidden bg-[#0f0f0f] border-t border-[#2a2a2a] px-4 py-4 space-y-1">
+        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-1">
           {businessConfig.nav.map((item) => {
             const highlighted = 'highlight' in item && item.highlight;
             return (
@@ -90,10 +86,10 @@ export function Navbar() {
                 href={item.href}
                 className={`block px-4 py-3 rounded-md text-sm font-medium transition-colors ${
                   highlighted
-                    ? 'bg-[#c0392b] text-black font-semibold text-center'
+                    ? 'bg-[#6366f1] text-white font-semibold text-center'
                     : pathname === item.href
-                    ? 'text-[#c0392b]'
-                    : 'text-gray-300 hover:text-white'
+                    ? 'text-[#6366f1]'
+                    : 'text-slate-600 hover:text-[#1e293b]'
                 }`}
               >
                 {item.label}

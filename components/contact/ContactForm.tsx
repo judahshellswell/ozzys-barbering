@@ -36,7 +36,7 @@ export function ContactForm() {
   if (sent) {
     return (
       <div className="text-center py-10">
-        <CheckCircle2 className="h-12 w-12 text-[#c0392b] mx-auto mb-4" />
+        <CheckCircle2 className="h-12 w-12 text-[#6366f1] mx-auto mb-4" />
         <h3 className="font-display text-2xl tracking-wide mb-2">Message Sent!</h3>
         <p className="text-muted-foreground">We&apos;ll get back to you as soon as possible.</p>
         <Button onClick={() => setSent(false)} variant="outline" className="mt-6">Send another</Button>

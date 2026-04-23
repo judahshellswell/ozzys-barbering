@@ -76,7 +76,7 @@ export default function AdminGalleryPage() {
         {/* Upload section */}
         <div className="bg-card border border-border rounded-xl p-5 mb-6">
           <h2 className="font-semibold mb-4 flex items-center gap-2">
-            <ImagePlus className="h-4 w-4 text-[#c0392b]" />
+            <ImagePlus className="h-4 w-4 text-[#6366f1]" />
             Upload New Photo
           </h2>
           <div className="flex flex-col sm:flex-row gap-3">
@@ -87,7 +87,7 @@ export default function AdminGalleryPage() {
               className="sm:flex-1"
             />
             <label className="cursor-pointer">
-              <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#c0392b] hover:bg-[#a93226] text-black transition-colors cursor-pointer ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
+              <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#6366f1] hover:bg-[#4f46e5] text-black transition-colors cursor-pointer ${uploading ? 'opacity-50 pointer-events-none' : ''}`}>
                 <Upload className="h-4 w-4" />
                 {uploading ? 'Uploading...' : 'Choose Photo'}
               </span>

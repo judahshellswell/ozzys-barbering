@@ -14,12 +14,34 @@ import type { Availability, BlockedDate } from '@/types';
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
+const HOURS = Array.from({ length: 24 }, (_, i) => {
+  const h = i.toString().padStart(2, '0');
+  const label = i === 0 ? '12:00 AM' : i < 12 ? `${i}:00 AM` : i === 12 ? '12:00 PM' : `${i - 12}:00 PM`;
+  return { value: `${h}:00`, label };
+});
+
 const DEFAULT_SCHEDULE: Availability[] = DAY_NAMES.map((_, i) => ({
   dayOfWeek: i,
   startTime: '09:00',
   endTime: '18:00',
-  isActive: i >= 1 && i <= 6, // Mon–Sat default
+  isActive: i >= 1 && i <= 6,
 }));
+
+function HourSelect({ value, onChange, disabled }: { value: string; onChange: (v: string) => void; disabled?: boolean }) {
+  const normalised = value.length === 5 && value.endsWith(':00') ? value : value.slice(0, 2) + ':00';
+  return (
+    <select
+      value={normalised}
+      onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
+      className="h-8 rounded-md border border-input bg-background px-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {HOURS.map((h) => (
+        <option key={h.value} value={h.value}>{h.label}</option>
+      ))}
+    </select>
+  );
+}
 
 export default function AdminAvailabilityPage() {
   const { getToken } = useAdminToken();
@@ -115,7 +137,8 @@ export default function AdminAvailabilityPage() {
       <div className="p-6 space-y-8 max-w-2xl">
         {/* Weekly Schedule */}
         <section>
-          <h2 className="font-semibold text-lg mb-4">Weekly Schedule</h2>
+          <h2 className="font-semibold text-lg mb-1">Weekly Schedule</h2>
+          <p className="text-sm text-muted-foreground mb-4">Set the hours Ozzy is available each day.</p>
           {loading ? (
             <div className="space-y-2">{[1,2,3,4,5,6,7].map(i => <div key={i} className="h-12 bg-muted rounded-lg animate-pulse" />)}</div>
           ) : (
@@ -124,32 +147,28 @@ export default function AdminAvailabilityPage() {
                 <div key={day.dayOfWeek} className={`flex items-center gap-4 p-3 rounded-lg border transition-colors ${day.isActive ? 'bg-card border-border' : 'bg-muted/50 border-transparent opacity-60'}`}>
                   <button
                     onClick={() => updateDay(day.dayOfWeek, 'isActive', !day.isActive)}
-                    className={`w-10 h-6 rounded-full transition-colors shrink-0 ${day.isActive ? 'bg-[#c0392b]' : 'bg-muted-foreground/30'}`}
+                    className={`w-10 h-6 rounded-full transition-colors shrink-0 ${day.isActive ? 'bg-[#6366f1]' : 'bg-muted-foreground/30'}`}
                   >
                     <div className={`w-4 h-4 bg-white rounded-full mx-1 transition-transform ${day.isActive ? 'translate-x-4' : ''}`} />
                   </button>
                   <span className="w-24 text-sm font-medium shrink-0">{DAY_NAMES[day.dayOfWeek]}</span>
-                  <Input
-                    type="time"
+                  <HourSelect
                     value={day.startTime}
-                    onChange={(e) => updateDay(day.dayOfWeek, 'startTime', e.target.value)}
+                    onChange={(v) => updateDay(day.dayOfWeek, 'startTime', v)}
                     disabled={!day.isActive}
-                    className="w-32 h-8 text-sm"
                   />
                   <span className="text-muted-foreground text-sm">to</span>
-                  <Input
-                    type="time"
+                  <HourSelect
                     value={day.endTime}
-                    onChange={(e) => updateDay(day.dayOfWeek, 'endTime', e.target.value)}
+                    onChange={(v) => updateDay(day.dayOfWeek, 'endTime', v)}
                     disabled={!day.isActive}
-                    className="w-32 h-8 text-sm"
                   />
                   {!day.isActive && <Badge variant="secondary" className="text-xs">Closed</Badge>}
                 </div>
               ))}
             </div>
           )}
-          <Button onClick={saveSchedule} disabled={saving} className="mt-4 bg-[#c0392b] hover:bg-[#a93226] text-black">
+          <Button onClick={saveSchedule} disabled={saving} className="mt-4 bg-[#6366f1] hover:bg-[#4f46e5] text-white">
             {saving ? 'Saving...' : 'Save Schedule'}
           </Button>
         </section>
@@ -172,7 +191,7 @@ export default function AdminAvailabilityPage() {
               onChange={(e) => setNewReason(e.target.value)}
               className="flex-1"
             />
-            <Button onClick={addBlockedDate} disabled={!newDate} className="gap-2 bg-[#0f0f0f] hover:bg-[#1a1a1a] text-white shrink-0">
+            <Button onClick={addBlockedDate} disabled={!newDate} className="gap-2 bg-[#1e293b] hover:bg-[#334155] text-white shrink-0">
               <Plus className="h-4 w-4" />
               Block
             </Button>

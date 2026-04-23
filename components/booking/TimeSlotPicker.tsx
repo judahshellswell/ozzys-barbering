@@ -56,8 +56,8 @@ export function TimeSlotPicker({ serviceId, date, onSelect, onBack }: TimeSlotPi
               onClick={() => setSelected(slot)}
               className={`py-2.5 px-3 rounded-md text-sm font-medium border transition-all ${
                 selected === slot
-                  ? 'bg-[#0f0f0f] text-white border-[#0f0f0f] ring-2 ring-[#c0392b]'
-                  : 'bg-card border-border hover:border-[#c0392b] hover:text-[#c0392b]'
+                  ? 'bg-[#0f0f0f] text-white border-[#0f0f0f] ring-2 ring-[#6366f1]'
+                  : 'bg-card border-border hover:border-[#6366f1] hover:text-[#6366f1]'
               }`}
             >
               {formatTime(slot)}

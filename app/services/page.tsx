@@ -22,7 +22,7 @@ export default async function ServicesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-[#0f0f0f] text-white py-16 px-4 text-center">
+      <div className="bg-[#1e293b] text-white py-16 px-4 text-center">
         <h1 className="font-display text-6xl tracking-wide text-white">Our Services</h1>
         <p className="text-gray-400 mt-3 max-w-md mx-auto">
           From classic cuts to precision fades — every service is delivered with care.
@@ -39,7 +39,7 @@ export default async function ServicesPage() {
         <div className="text-center mt-12">
           <LinkButton
             href="/booking"
-            className="bg-[#c0392b] hover:bg-[#a93226] text-black font-semibold px-8 py-6 text-lg border-transparent"
+            className="bg-[#6366f1] hover:bg-[#4f46e5] text-black font-semibold px-8 py-6 text-lg border-transparent"
           >
             Book Now
           </LinkButton>

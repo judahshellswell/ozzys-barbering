@@ -105,7 +105,7 @@ export default function AdminServicesPage() {
       <AdminHeader title="Services" />
       <div className="p-6">
         <div className="flex justify-end mb-6">
-          <Button onClick={openCreate} className="bg-[#c0392b] hover:bg-[#a93226] text-black gap-2">
+          <Button onClick={openCreate} className="bg-[#6366f1] hover:bg-[#4f46e5] text-black gap-2">
             <Plus className="h-4 w-4" />
             Add Service
           </Button>
@@ -176,7 +176,7 @@ export default function AdminServicesPage() {
             <div className="flex items-center gap-3">
               <button onClick={() => setForm(f => ({...f, active: !f.active}))}>
                 {form.active
-                  ? <ToggleRight className="h-6 w-6 text-[#c0392b]" />
+                  ? <ToggleRight className="h-6 w-6 text-[#6366f1]" />
                   : <ToggleLeft className="h-6 w-6 text-muted-foreground" />}
               </button>
               <Label className="cursor-pointer" onClick={() => setForm(f => ({...f, active: !f.active}))}>
@@ -185,7 +185,7 @@ export default function AdminServicesPage() {
             </div>
             <div className="flex gap-3 pt-2">
               <Button variant="outline" onClick={() => setDialogOpen(false)} className="flex-1">Cancel</Button>
-              <Button onClick={saveService} disabled={saving || !form.name} className="flex-1 bg-[#c0392b] hover:bg-[#a93226] text-black">
+              <Button onClick={saveService} disabled={saving || !form.name} className="flex-1 bg-[#6366f1] hover:bg-[#4f46e5] text-black">
                 {saving ? 'Saving...' : 'Save'}
               </Button>
             </div>

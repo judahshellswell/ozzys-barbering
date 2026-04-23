@@ -23,8 +23,8 @@ export function ServiceCard({ service, selected, onClick, variant = 'default' }:
           : ''
       } ${
         selected
-          ? 'border-[#c0392b] ring-2 ring-[#c0392b] shadow-md'
-          : 'border-border hover:border-[#c0392b]/50'
+          ? 'border-[#6366f1] ring-2 ring-[#6366f1] shadow-md'
+          : 'border-border hover:border-[#6366f1]/50'
       }`}
     >
       <CardContent className="p-5">
@@ -44,13 +44,13 @@ export function ServiceCard({ service, selected, onClick, variant = 'default' }:
             </div>
           </div>
           <div className="text-right shrink-0">
-            <span className="text-2xl font-bold text-[#c0392b]">
+            <span className="text-2xl font-bold text-[#6366f1]">
               {currency}{service.price.toFixed(2)}
             </span>
           </div>
         </div>
         {selected && (
-          <div className="mt-3 text-xs font-medium text-[#c0392b]">✓ Selected</div>
+          <div className="mt-3 text-xs font-medium text-[#6366f1]">✓ Selected</div>
         )}
       </CardContent>
     </Card>
