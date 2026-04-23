@@ -22,11 +22,11 @@ export const businessConfig = {
   },
 
   contact: {
-    phone: '+44 7700 900000',
-    email: 'ozzy@ozzysbarbering.com',
+    phone: '+44 7797851386',
+    email: 'ozzy.stewartsunley@gmail.com',
     address: '12 High Street, St Helier, Jersey, JE2 3AB',
-    instagram: 'https://instagram.com/ozzysbarbering',
-    facebook: 'https://facebook.com/ozzysbarbering',
+    instagram: 'https://www.instagram.com/0zzy_s_sunley/',
+    tiktok: 'https://www.tiktok.com/@0_sunley',
   },
 
   nav: [
