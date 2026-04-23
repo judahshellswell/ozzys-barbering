@@ -34,7 +34,7 @@ export function GalleryGrid({ images }: GalleryGridProps) {
               {image.type === 'video' ? (
                 <>
                   <video
-                    src={image.url}
+                    src={`${image.url}#t=0.001`}
                     className="w-full h-auto object-cover group-hover:opacity-90 transition-opacity"
                     muted
                     playsInline

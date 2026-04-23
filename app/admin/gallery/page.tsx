@@ -171,7 +171,7 @@ export default function AdminGalleryPage() {
               <div key={img.id} className="relative group aspect-square rounded-lg overflow-hidden bg-muted">
                 {img.type === 'video' ? (
                   <video
-                    src={img.url}
+                    src={`${img.url}#t=0.001`}
                     className="w-full h-full object-cover"
                     muted
                     playsInline
