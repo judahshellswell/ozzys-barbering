@@ -45,7 +45,7 @@ export default function AdminGalleryPage() {
         const urlRes = await fetch('/api/gallery/upload-url', {
           method: 'POST',
           headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ filename: file.name, contentType: file.type, caption }),
+          body: JSON.stringify({ filename: file.name, contentType: file.type }),
         });
         if (!urlRes.ok) throw new Error('Failed to get upload URL');
         const { signedUrl, storagePath } = await urlRes.json();
@@ -58,17 +58,21 @@ export default function AdminGalleryPage() {
           xhr.upload.onprogress = (ev) => {
             if (ev.lengthComputable) setUploadProgress(Math.round((ev.loaded / ev.total) * 100));
           };
-          xhr.onload = () => (xhr.status === 200 ? resolve() : reject(new Error(`Upload failed: ${xhr.status}`)));
-          xhr.onerror = () => reject(new Error('Upload failed'));
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) resolve();
+            else reject(new Error(`Upload failed: ${xhr.status} ${xhr.responseText}`));
+          };
+          xhr.onerror = () => reject(new Error('Network error during upload'));
           xhr.send(file);
         });
 
-        // Make the file publicly readable
-        await fetch('/api/gallery/make-public', {
+        // Make public and create Firestore doc only after successful upload
+        const pubRes = await fetch('/api/gallery/make-public', {
           method: 'POST',
           headers: { ...authHeaders(token), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ storagePath }),
+          body: JSON.stringify({ storagePath, contentType: file.type, caption }),
         });
+        if (!pubRes.ok) throw new Error('Failed to finalise upload');
       } else {
         // For images: use the original multipart route (fast, no size concern)
         const fd = new FormData();
