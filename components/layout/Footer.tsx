@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { businessConfig } from '@/config/business.config';
-import { Scissors, Phone, Mail, MapPin } from 'lucide-react';
+import { Scissors, Phone, Mail } from 'lucide-react';
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -73,10 +73,6 @@ export function Footer() {
         <div>
           <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wider">Contact</h4>
           <ul className="space-y-3">
-            <li className="flex items-start gap-2 text-sm">
-              <MapPin className="h-4 w-4 text-[#6366f1] mt-0.5 shrink-0" />
-              {businessConfig.contact.address}
-            </li>
             <li className="flex items-center gap-2 text-sm">
               <Phone className="h-4 w-4 text-[#6366f1] shrink-0" />
               <a href={`tel:${businessConfig.contact.phone}`} className="hover:text-[#6366f1] transition-colors">

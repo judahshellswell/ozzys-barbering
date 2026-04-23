@@ -1,6 +1,6 @@
 import { ContactForm } from '@/components/contact/ContactForm';
 import { businessConfig } from '@/config/business.config';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail } from 'lucide-react';
 
 function InstagramIcon({ className }: { className?: string }) {
   return (
@@ -37,15 +37,6 @@ export default function ContactPage() {
         <div>
           <h2 className="font-display text-3xl tracking-wide mb-6">Find Us</h2>
           <ul className="space-y-5">
-            <li className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-[#6366f1]/10 flex items-center justify-center shrink-0">
-                <MapPin className="h-5 w-5 text-[#6366f1]" />
-              </div>
-              <div>
-                <p className="font-semibold">Address</p>
-                <p className="text-muted-foreground text-sm">{businessConfig.contact.address}</p>
-              </div>
-            </li>
             <li className="flex items-start gap-4">
               <div className="w-10 h-10 rounded-full bg-[#6366f1]/10 flex items-center justify-center shrink-0">
                 <Phone className="h-5 w-5 text-[#6366f1]" />

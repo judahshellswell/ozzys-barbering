@@ -76,7 +76,7 @@ function customerHtml(data: BookingEmailData): string {
       <p style="font-size:13px;color:#94a3b8">📞 ${businessConfig.contact.phone} &nbsp;|&nbsp; ✉️ ${businessConfig.contact.email}</p>
     </div>
     <div class="footer">
-      <p>${businessConfig.name} · ${businessConfig.contact.address}</p>
+      <p>${businessConfig.name}</p>
     </div>
   </div>
 </body>
