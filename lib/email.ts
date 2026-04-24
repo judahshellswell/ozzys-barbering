@@ -131,15 +131,14 @@ export async function sendBookingConfirmation(data: BookingEmailData): Promise<v
   const resend = getResend();
   const from = process.env.FROM_EMAIL || 'onboarding@resend.dev';
 
-  await Promise.all([
-    // Confirmation to customer
+  // Send both independently so one failure doesn't block the other
+  const [customerResult, ozzyResult] = await Promise.allSettled([
     resend.emails.send({
       from,
       to: data.email,
       subject: `Booking Confirmed — ${data.confirmationCode} | ${businessConfig.name}`,
       html: customerHtml(data),
     }),
-    // Notification to Ozzy
     resend.emails.send({
       from,
       to: OZZY_EMAIL,
@@ -147,6 +146,15 @@ export async function sendBookingConfirmation(data: BookingEmailData): Promise<v
       html: ozzyNotificationHtml(data),
     }),
   ]);
+
+  if (customerResult.status === 'rejected') {
+    console.error('Failed to send customer confirmation email:', customerResult.reason);
+  }
+  if (ozzyResult.status === 'rejected') {
+    console.error('Failed to send Ozzy notification email:', ozzyResult.reason);
+  } else if (ozzyResult.status === 'fulfilled') {
+    console.log('Ozzy notification sent to', OZZY_EMAIL, ozzyResult.value);
+  }
 }
 
 export async function sendContactEmail(data: {
